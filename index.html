@@ -1,587 +1,150 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-<title> Invoice PB Sangkara </title>
-
-<style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body{
-    font-family:"Times New Roman", serif;
-    background:#e5e5e5;
-    padding:15px;
-}
-
-.container{
-    max-width:1200px;
-    margin:auto;
-}
-
-/* Mobile friendly form box */
-.form-box{
-    background:white;
-    padding:15px;
-    border-radius:8px;
-    margin-bottom:20px;
-    box-shadow:0 2px 10px rgba(0,0,0,0.1);
-}
-
-.form-box h2{
-    margin-bottom:15px;
-    font-size:1.4rem;
-    text-align:center;
-}
-
-/* Responsive row - jadi column di mobile */
-.row{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-    margin-bottom:12px;
-}
-
-.row input, .row select{
-    width:100%;
-    padding:12px;
-    font-size:16px;
-    border:1px solid #ccc;
-    border-radius:5px;
-    font-family:inherit;
-}
-
-/* Format invoice number helper */
-.invoice-format-helper{
-    background:#f0f9ff;
-    padding:8px 12px;
-    border-radius:6px;
-    margin-bottom:15px;
-    font-size:13px;
-    color:#075985;
-    border-left:3px solid #1e40af;
-}
-
-.invoice-format-helper strong{
-    color:#1e40af;
-}
-
-.invoice-format-helper code{
-    background:#e2e8f0;
-    padding:2px 6px;
-    border-radius:4px;
-    font-family:monospace;
-    font-size:12px;
-}
-
-/* Button area */
-.btn-area{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-    margin-top:15px;
-}
-
-button{
-    padding:12px 20px;
-    border:none;
-    background:#1e40af;
-    color:white;
-    cursor:pointer;
-    border-radius:5px;
-    font-size:16px;
-    font-weight:bold;
-    width:100%;
-    transition:opacity 0.2s;
-}
-
-button:active{
-    opacity:0.8;
-}
-
-button:hover{
-    background:#16328b;
-}
-
-.print-btn{
-    background:#059669;
-}
-
-/* Invoice area - mobile optimized */
-.invoice{
-    width:100%;
-    max-width:210mm;
-    background:white;
-    margin:auto;
-    padding:20px;
-    position:relative;
-    overflow-x:auto;
-    border-radius:8px;
-    box-shadow:0 2px 10px rgba(0,0,0,0.1);
-}
-
-/* Watermark responsif */
-.watermark{
-    position:absolute;
-    width:80%;
-    max-width:400px;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-    opacity:0.06;
-    pointer-events:none;
-}
-
-/* Header - LOGO DIPERBESAR, TEKS TETAP NORMAL */
-.header{
-    display:flex;
-    align-items:center;
-    gap:15px;
-    flex-wrap:nowrap;
-}
-
-.logo{
-    width:auto;
-    height:100px;  /* LOGO DIPERBESAR */
-    flex-shrink:0;
-    object-fit:contain;
-}
-
-.company{
-    flex:1;
-    line-height:1.4;
-    text-align:left;
-}
-
-.company h3{
-    font-size:18px;
-    font-weight:bold;
-    margin-bottom:5px;
-    letter-spacing:1px;
-    color:#000;
-}
-
-.company p{
-    font-size:12px;
-    color:#444;
-    margin:2px 0;
-    line-height:1.4;
-}
-
-/* Invoice top area */
-.invoice-top{
-    margin-top:20px;
-}
-
-.invoice-title{
-    text-align:right;
-    font-size:32px;
-    letter-spacing:4px;
-    color:#777;
-    font-weight:bold;
-}
-
-.line{
-    border-bottom:2px solid #555;
-    margin-top:5px;
-}
-
-/* Info table responsif */
-.info{
-    margin-top:20px;
-    line-height:1.8;
-    overflow-x:auto;
-}
-
-.info table{
-    width:100%;
-    border:none;
-}
-
-.info td{
-    border:none;
-    padding:4px 0;
-    vertical-align:top;
-}
-
-/* Tabel invoice - scroll horizontal jika perlu */
-.invoice-table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:25px;
-    font-size:14px;
-}
-
-.invoice-table th,
-.invoice-table td{
-    border:1px solid black;
-    padding:8px;
-}
-
-.invoice-table th{
-    text-align:center;
-    background:#f5f5f5;
-}
-
-.right{
-    text-align:right;
-}
-
-.total-row{
-    font-weight:bold;
-}
-
-.note{
-    margin-top:20px;
-    font-size:14px;
-}
-
-.note ul{
-    margin-left:20px;
-    margin-top:8px;
-}
-
-.note li{
-    margin-bottom:5px;
-}
-
-.signature{
-    margin-top:40px;
-    text-align:right;
-    line-height:2;
-    font-size:14px;
-}
-
-/* Print styles tetap dipertahankan */
-@media print{
-    body{
-        background:white;
-        padding:0;
-        margin:0;
-    }
-    
-    .form-box, .btn-area, button, .print-btn{
-        display:none;
-    }
-    
-    .invoice{
-        width:100%;
-        margin:0;
-        padding:20px;
-        box-shadow:none;
-        border-radius:0;
-    }
-    
-    .watermark{
-        opacity:0.08;
-    }
-    
-    @page{
-        size:auto;
-        margin:10mm;
-    }
-}
-
-/* Tablet dan layar lebih besar */
-@media (min-width: 640px){
-    body{
-        padding:30px;
-    }
-    
-    .row{
-        flex-direction:row;
-        gap:15px;
-    }
-    
-    .row input, .row select{
-        flex:1;
-    }
-    
-    .btn-area{
-        flex-direction:row;
-    }
-    
-    button{
-        width:auto;
-        flex:1;
-    }
-    
-    .invoice{
-        padding:40px;
-    }
-    
-    .logo{
-        height:120px;  /* LOGO LEBIH BESAR LAGI DI TABLET */
-    }
-    
-    .company h3{
-        font-size:18px;
-    }
-    
-    .company p{
-        font-size:12px;
-    }
-    
-    .invoice-title{
-        font-size:42px;
-        letter-spacing:8px;
-    }
-}
-
-/* Untuk layar sangat kecil */
-@media (max-width: 480px){
-    .invoice-title{
-        font-size:24px;
-    }
-    
-    .invoice-table th,
-    .invoice-table td{
-        padding:5px;
-        font-size:12px;
-    }
-    
-    .signature{
-        margin-top:25px;
-    }
-    
-    .note{
-        font-size:12px;
-    }
-    
-    .header{
-        gap:10px;
-    }
-    
-    .logo{
-        height:70px;  /* LOGO TETAP BESAR DI MOBILE */
-    }
-    
-    .company h3{
-        font-size:14px;
-    }
-    
-    .company p{
-        font-size:9px;
-    }
-}
-
-/* Desktop lebih besar */
-@media (min-width: 1024px){
-    .logo{
-        height:130px;  /* LOGO PALING BESAR DI DESKTOP */
-    }
-    
-    .company h3{
-        font-size:18px;
-    }
-    
-    .company p{
-        font-size:12px;
-    }
-}
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Invoice PB Sangkara</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<div class="container">
+    <div class="container">
 
-<div class="form-box">
-<h2>📋 Input Data Invoice</h2>
+        <div class="form-box">
+            <h2>📋 Input Data Invoice</h2>
 
-<!-- Format nomor invoice helper -->
-<div class="invoice-format-helper">
-💡 <strong>Format Nomor Invoice:</strong> <code>Nomor Urut/INV-SB/Bulan/Tahun</code><br>
-Contoh: <code>038/INV-SB/VI/2026</code> (VI = Juni, 2026 = Tahun)
-</div>
+            <!-- Format nomor invoice helper -->
+            <div class="invoice-format-helper">
+                💡 <strong>Format Nomor Invoice:</strong> <code>Nomor Urut/INV-SB/Bulan/Tahun</code><br>
+                Contoh: <code>038/INV-SB/VI/2026</code> (VI = Juni, 2026 = Tahun)
+            </div>
 
-<div class="row">
-<input type="text" id="invoice_no" placeholder="Nomor Invoice (contoh: 038/INV-SB/VI/2026)">
-<input type="text" id="nama" placeholder="Nama Member">
-</div>
+            <div class="row">
+                <input type="text" id="invoice_no" placeholder="Nomor Invoice (contoh: 038/INV-SB/VI/2026)">
+                <input type="text" id="nama" placeholder="Nama Member">
+            </div>
 
-<div class="row">
-<input type="text" id="periode" placeholder="Periode Invoice (contoh: 04 Juni 2026 - 04 Juli 2026)">
-<input type="date" id="tempo">
-</div>
+            <div class="row">
+                <input type="text" id="periode" placeholder="Periode Invoice (contoh: 04 Juni 2026 - 04 Juli 2026)">
+                <input type="date" id="tempo">
+            </div>
 
-<div class="row">
-<input type="number" id="pendaftaran" placeholder="Biaya Pendaftaran">
-<input type="number" id="iuran" placeholder="Iuran Bulanan">
-</div>
+            <div class="row">
+                <input type="number" id="pendaftaran" placeholder="Biaya Pendaftaran">
+                <input type="number" id="iuran" placeholder="Iuran Bulanan">
+            </div>
 
-<div class="row">
-<input type="text" id="kota" placeholder="Kota (contoh: Depok)">
-<input type="date" id="tanggal_surat">
-</div>
+            <div class="row">
+                <input type="text" id="kota" placeholder="Kota (contoh: Depok)">
+                <input type="date" id="tanggal_surat">
+            </div>
 
-<div class="row">
-<input type="text" id="admin_nama" placeholder="Nama Admin (contoh: Admin PB Sangkara)">
-</div>
+            <div class="row">
+                <input type="text" id="admin_nama" placeholder="Nama Admin (contoh: Admin PB Sangkara)">
+            </div>
 
-<div class="btn-area">
-<button onclick="generateInvoice()">✨ Generate Invoice</button>
-<button class="print-btn" onclick="window.print()">🖨️ Cetak / PDF</button>
-</div>
-</div>
+            <div class="btn-area">
+                <button onclick="generateInvoice()">✨ Generate Invoice</button>
+                <button class="print-btn" onclick="window.print()">🖨️ Cetak / PDF</button>
+            </div>
+        </div>
 
-<div class="invoice" id="invoice-area">
+        <div class="invoice" id="invoice-area">
 
-<img src="Logo Sangkara.png" class="watermark" alt="watermark" onerror="this.style.display='none'">
+            <img src="Logo Sangkara.png" class="watermark" alt="watermark" onerror="this.style.display='none'">
 
-<div class="header">
-<img src="Logo Sangkara.png" class="logo" alt="Logo" onerror="this.style.display='none'">
-<div class="company">
-<h3>SANGKARA BADMINTON CLUB</h3>
-<p>Jl. Nusa Kenari No. 65 Cinangka Depok</p>
-<p>No. Telp 085173178625 / 08997436352</p>
-<p>Email : sangkarabc@gmail.com | IG : sangkara_badminton</p>
-</div>
-</div>
+            <div class="header">
+                <img src="Logo Sangkara.png" class="logo" alt="Logo" onerror="this.style.display='none'">
+                <div class="company">
+                    <h3>SANGKARA BADMINTON CLUB</h3>
+                    <p>Jl. Nusa Kenari No. 65 Cinangka Depok</p>
+                    <p>No. Telp 085173178625 / 08997436352</p>
+                    <p>Email : sangkarabc@gmail.com | IG : sangkara_badminton</p>
+                </div>
+            </div>
 
-<div class="invoice-top">
-<div style="display:flex;justify-content:space-between;align-items:end;flex-wrap:wrap;gap:10px;">
-<div>
-<b>No : <span id="out_invoice">-</span></b>
-</div>
-<div class="invoice-title">
-INVOICE
-</div>
-</div>
-<div class="line"></div>
-</div>
+            <div class="invoice-top">
+                <div style="display:flex;justify-content:space-between;align-items:end;flex-wrap:wrap;gap:10px;">
+                    <div>
+                        <b>No : <span id="out_invoice">-</span></b>
+                    </div>
+                    <div class="invoice-title">
+                        INVOICE
+                    </div>
+                </div>
+                <div class="line"></div>
+            </div>
 
-<div class="info">
-<table>
-<tr>
-<td width="130">Nama</td>
-<td width="20">:</td>
-<td id="out_nama">-</td>
-</tr>
-<tr>
-<td>Periode Invoice</td>
-<td>:</td>
-<td id="out_periode">-</td>
-</tr>
-<tr>
-<td>Jatuh Tempo</td>
-<td>:</td>
-<td id="out_tempo">-</td>
-</tr>
-</table>
-</div>
+            <div class="info">
+                <table>
+                    <tr>
+                        <td width="130">Nama</td>
+                        <td width="20">:</td>
+                        <td id="out_nama">-</td>
+                    </tr>
+                    <tr>
+                        <td>Periode Invoice</td>
+                        <td>:</td>
+                        <td id="out_periode">-</td>
+                    </tr>
+                    <tr>
+                        <td>Jatuh Tempo</td>
+                        <td>:</td>
+                        <td id="out_tempo">-</td>
+                    </tr>
+                </table>
+            </div>
 
-<table class="invoice-table">
-<tr>
-<th width="60%">DESKRIPSI</th>
-<th>JUMLAH</th>
-</tr>
-<tr>
-<td>
-Pendaftaran
-</td>
-<td class="right">
-Rp <span id="out_pendaftaran">0</span>
-</td>
-</tr>
-<tr>
-<td>
-Iuran Bulanan
-</td>
-<td class="right">
-Rp <span id="out_iuran">0</span>
-</td>
-</tr>
-<tr class="total-row">
-<td class="right">
-Total
-</td>
-<td class="right">
-Rp <span id="out_total">0</span>
-</td>
-</tr>
-</table>
+            <table class="invoice-table">
+                <tr>
+                    <th width="60%">DESKRIPSI</th>
+                    <th>JUMLAH</th>
+                </tr>
+                <tr>
+                    <td>Pendaftaran</td>
+                    <td class="right">
+                        Rp <span id="out_pendaftaran">0</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Iuran Bulanan</td>
+                    <td class="right">
+                        Rp <span id="out_iuran">0</span>
+                    </td>
+                </tr>
+                <tr class="total-row">
+                    <td class="right">
+                        Total
+                    </td>
+                    <td class="right">
+                        Rp <span id="out_total">0</span>
+                    </td>
+                </tr>
+            </table>
 
-<div class="note">
-<b>Note :</b>
-<ul>
-<li>Pembayaran hanya bisa dilakukan melalui transfer Rek. Bank BRI 764901011156536 An/ Anggita Sudjana Puspita N.</li>
-<li>Setelah melakukan pembayaran harap konfirmasi ke admin PB Sangkara  </li>
-</ul>
-</div>
+            <div class="note">
+                <b>Note :</b>
+                <ul>
+                    <li>Pembayaran hanya bisa dilakukan melalui transfer Rek. Bank BRI 764901011156536 An/ Anggita Sudjana Puspita N.</li>
+                    <li>Setelah melakukan pembayaran harap konfirmasi ke admin PB Sangkara</li>
+                </ul>
+            </div>
 
-<div class="signature">
-<span id="out_kota">-</span>,
-<span id="out_tanggal_surat">-</span>
-<br><br>
-<span id="out_admin">-</span>
-</div>
+            <div class="signature">
+                <span id="out_kota">-</span>,
+                <span id="out_tanggal_surat">-</span>
+                <br><br>
+                <span id="out_admin">-</span>
+            </div>
 
-</div>
+        </div>
 
-</div>
+    </div>
 
-<script>
-
-function rupiah(angka){
-    if(isNaN(angka) || angka === null || angka === ''){
-        return '0';
-    }
-    return Number(angka).toLocaleString('id-ID');
-}
-
-function formatTanggalIndonesia(tanggalInput){
-    if(!tanggalInput) return '';
-    let tgl = new Date(tanggalInput);
-    if(isNaN(tgl.getTime())) return tanggalInput;
-    return tgl.toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-    });
-}
-
-function generateInvoice(){
-    // Ambil nilai dari input (bisa kosong)
-    let invoice = document.getElementById('invoice_no').value;
-    let nama = document.getElementById('nama').value;
-    let periode = document.getElementById('periode').value;
-    let tempoRaw = document.getElementById('tempo').value;
-    let tempo = tempoRaw ? formatTanggalIndonesia(tempoRaw) : '';
-    
-    let pendaftaran = parseInt(document.getElementById('pendaftaran').value) || 0;
-    let iuran = parseInt(document.getElementById('iuran').value) || 0;
-    let total = pendaftaran + iuran;
-    
-    let kota = document.getElementById('kota').value;
-    let tanggalSuratRaw = document.getElementById('tanggal_surat').value;
-    let tanggalSurat = tanggalSuratRaw ? formatTanggalIndonesia(tanggalSuratRaw) : '';
-    let adminNama = document.getElementById('admin_nama').value;
-    
-    // Update tampilan invoice (tampilkan - jika kosong)
-    document.getElementById('out_invoice').innerText = invoice || '-';
-    document.getElementById('out_nama').innerText = nama || '-';
-    document.getElementById('out_periode').innerText = periode || '-';
-    document.getElementById('out_tempo').innerText = tempo || '-';
-    
-    document.getElementById('out_pendaftaran').innerText = rupiah(pendaftaran);
-    document.getElementById('out_iuran').innerText = rupiah(iuran);
-    document.getElementById('out_total').innerText = rupiah(total);
-    
-    document.getElementById('out_kota').innerText = kota || '-';
-    document.getElementById('out_tanggal_surat').innerText = tanggalSurat || '-';
-    document.getElementById('out_admin').innerText = adminNama || '-';
-}
-
-// Tidak ada auto generate saat halaman dimuat
-// Invoice akan menampilkan tanda - (strip) sampai user klik Generate
-
-</script>
+    <script src="script.js"></script>
 
 </body>
+
 </html>
