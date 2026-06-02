@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generator Invoice PB Sangkara</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:"Times New Roman", serif;
+    background:#e5e5e5;
+    padding:30px;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+}
+
+.form-box{
+    background:white;
+    padding:20px;
+    border-radius:8px;
+    margin-bottom:30px;
+}
+
+.form-box h2{
+    margin-bottom:15px;
+}
+
+.row{
+    display:flex;
+    gap:15px;
+    margin-bottom:10px;
+}
+
+.row input{
+    flex:1;
+    padding:10px;
+}
+
+button{
+    padding:12px 25px;
+    border:none;
+    background:#1e40af;
+    color:white;
+    cursor:pointer;
+    border-radius:5px;
+}
+
+button:hover{
+    background:#16328b;
+}
+
+.print-btn{
+    background:#059669;
+}
+
+.invoice{
+    width:210mm;
+    min-height:297mm;
+    background:white;
+    margin:auto;
+    padding:50px;
+    position:relative;
+    overflow:hidden;
+}
+
+.watermark{
+    position:absolute;
+    width:450px;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    opacity:0.06;
+}
+
+.header{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.logo{
+    width:90px;
+}
+
+.company{
+    color:#7b8794;
+}
+
+.company h3{
+    margin-bottom:5px;
+}
+
+.invoice-top{
+    margin-top:35px;
+}
+
+.invoice-title{
+    text-align:right;
+    font-size:42px;
+    letter-spacing:8px;
+    color:#777;
+    font-weight:bold;
+}
+
+.line{
+    border-bottom:2px solid #555;
+    margin-top:5px;
+}
+
+.info{
+    margin-top:25px;
+    line-height:2;
+}
+
+.info table{
+    border:none;
+}
+
+.info td{
+    border:none;
+    padding:0;
+}
+
+.invoice-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:35px;
+}
+
+.invoice-table th,
+.invoice-table td{
+    border:1px solid black;
+    padding:8px;
+}
+
+.invoice-table th{
+    text-align:center;
+}
+
+.right{
+    text-align:right;
+}
+
+.total-row{
+    font-weight:bold;
+}
+
+.note{
+    margin-top:25px;
+}
+
+.note ul{
+    margin-left:20px;
+    margin-top:10px;
+}
+
+.signature{
+    margin-top:70px;
+    text-align:right;
+    line-height:2;
+}
+
+@media print{
+
+    body{
+        background:white;
+        padding:0;
+    }
+
+    .form-box{
+        display:none;
+    }
+
+    .invoice{
+        width:100%;
+        margin:0;
+        padding:40px;
+    }
+
+    .btn-area{
+        display:none;
+    }
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div class="form-box">
+
+<h2>Input Data Invoice</h2>
+
+<div class="row">
+<input type="text" id="invoice_no" placeholder="Nomor Invoice">
+<input type="text" id="nama" placeholder="Nama Member">
+</div>
+
+<div class="row">
+<input type="text" id="periode" placeholder="Periode Invoice">
+<input type="date" id="tempo">
+</div>
+
+<div class="row">
+<input type="number" id="pendaftaran" placeholder="Biaya Pendaftaran">
+<input type="number" id="iuran" placeholder="Iuran Bulanan">
+</div>
+
+<div class="row">
+    <input type="text" id="kota" placeholder="Kota">
+    <input type="date" id="tanggal_surat">
+</div>
+
+<div class="row">
+    <input type="text" id="admin_nama" placeholder="Nama Admin">
+</div>
+
+<div class="btn-area">
+<button onclick="generateInvoice()">Generate Invoice</button>
+<button class="print-btn" onclick="window.print()">Cetak PDF</button>
+</div>
+
+</div>
+
+<div class="invoice" id="invoice-area">
+
+<img src="Logo Sangkara.jpeg" class="watermark">
+
+<div class="header">
+
+<img src="Logo Sangkara.jpeg" class="logo">
+
+<div class="company">
+<h3>SANGKARA BADMINTON CLUB</h3>
+
+Jl. Nusa Kenari No. 65 Cinangka Depok<br>
+No. Telp 085173178625 / 08997436352<br>
+Email : sangkarabc@gmail.com | IG : sangkara_badminton
+</div>
+
+</div>
+
+<div class="invoice-top">
+
+<div style="display:flex;justify-content:space-between;align-items:end">
+
+<div>
+<b>No : <span id="out_invoice">INV-SB-001</span></b>
+</div>
+
+<div class="invoice-title">
+INVOICE
+</div>
+
+</div>
+
+<div class="line"></div>
+
+</div>
+
+<div class="info">
+
+<table>
+
+<tr>
+<td width="130">Nama</td>
+<td width="20">:</td>
+<td id="out_nama">Raka dan Raina</td>
+</tr>
+
+<tr>
+<td>Periode Invoice</td>
+<td>:</td>
+<td id="out_periode">04 Juni 2026 - 04 Juli 2026</td>
+</tr>
+
+<tr>
+<td>Jatuh Tempo</td>
+<td>:</td>
+<td id="out_tempo">04 Juli 2026</td>
+</tr>
+
+</table>
+
+</div>
+
+<table class="invoice-table">
+
+<tr>
+<th width="60%">DESKRIPSI</th>
+<th>JUMLAH</th>
+</tr>
+
+<tr>
+<td>
+Pendaftaran
+</td>
+
+<td class="right">
+Rp <span id="out_pendaftaran">0</span>
+</td>
+</tr>
+
+<tr>
+<td>
+Iuran Bulanan
+</td>
+
+<td class="right">
+Rp <span id="out_iuran">0</span>
+</td>
+</tr>
+
+<tr class="total-row">
+
+<td class="right">
+Total
+</td>
+
+<td class="right">
+Rp <span id="out_total">0</span>
+</td>
+
+</tr>
+
+</table>
+
+<div class="note">
+
+<b>Note :</b>
+
+<ul>
+
+<li>
+Pembayaran hanya bisa dilakukan melalui transfer rekening yang telah ditentukan.
+</li>
+
+<li>
+Setelah melakukan pembayaran harap konfirmasi ke admin PB Sangkara.
+</li>
+
+</ul>
+
+</div>
+
+<div class="signature">
+
+<span id="out_kota">Depok</span>,
+<span id="out_tanggal_surat">2 Juni 2026</span>
+
+<br><br>
+
+<span id="out_admin">Admin PB Sangkara</span>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function rupiah(angka){
+    return Number(angka).toLocaleString('id-ID');
+}
+
+function generateInvoice(){
+
+    let invoice =
+        document.getElementById('invoice_no').value;
+
+    let nama =
+        document.getElementById('nama').value;
+
+    let periode =
+        document.getElementById('periode').value;
+
+    let tempo =
+        document.getElementById('tempo').value;
+
+    let pendaftaran =
+        parseInt(document.getElementById('pendaftaran').value) || 0;
+
+    let iuran =
+        parseInt(document.getElementById('iuran').value) || 0;
+
+    let total =
+        pendaftaran + iuran;
+
+    document.getElementById('out_invoice').innerText = invoice;
+    document.getElementById('out_nama').innerText = nama;
+    document.getElementById('out_periode').innerText = periode;
+    document.getElementById('out_tempo').innerText = tempo;
+
+    document.getElementById('out_pendaftaran').innerText =
+        rupiah(pendaftaran);
+
+    document.getElementById('out_iuran').innerText =
+        rupiah(iuran);
+
+    document.getElementById('out_total').innerText =
+        rupiah(total);
+    
+    let kota =
+    document.getElementById('kota').value;
+
+let tanggalSurat =
+    document.getElementById('tanggal_surat').value;
+
+let adminNama =
+    document.getElementById('admin_nama').value;
+
+document.getElementById('out_kota').innerText =
+    kota;
+
+document.getElementById('out_tanggal_surat').innerText =
+    tanggalSurat;
+
+document.getElementById('out_admin').innerText =
+    adminNama;
+}
+
+const sekarang = new Date();
+
+document.getElementById("tanggal-sekarang").innerText =
+sekarang.toLocaleDateString("id-ID",{
+    day:"numeric",
+    month:"long",
+    year:"numeric"
+});
+
+const formatTanggal = new Date(tanggalSurat)
+    .toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    });
+
+document.getElementById('out_tanggal_surat').innerText =
+    formatTanggal;
+
+</script>
+
+</body>
+</html>
