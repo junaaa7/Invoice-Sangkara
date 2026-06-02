@@ -137,31 +137,40 @@ button:hover{
     pointer-events:none;
 }
 
-/* Header mobile friendly */
+/* Header - LOGO DIPERBESAR, TEKS TETAP NORMAL */
 .header{
     display:flex;
     align-items:center;
-    gap:12px;
-    flex-wrap:wrap;
-    justify-content:center;
-    text-align:center;
+    gap:15px;
+    flex-wrap:nowrap;
 }
 
 .logo{
-    width:70px;
-    height:auto;
+    width:auto;
+    height:100px;  /* LOGO DIPERBESAR */
+    flex-shrink:0;
+    object-fit:contain;
 }
 
 .company{
-    color:#7b8794;
-    font-size:12px;
     flex:1;
-    min-width:150px;
+    line-height:1.4;
+    text-align:left;
 }
 
 .company h3{
+    font-size:18px;
+    font-weight:bold;
     margin-bottom:5px;
-    font-size:14px;
+    letter-spacing:1px;
+    color:#000;
+}
+
+.company p{
+    font-size:12px;
+    color:#444;
+    margin:2px 0;
+    line-height:1.4;
 }
 
 /* Invoice top area */
@@ -307,16 +316,15 @@ button:hover{
     }
     
     .logo{
-        width:90px;
-    }
-    
-    .company{
-        font-size:inherit;
-        text-align:left;
+        height:120px;  /* LOGO LEBIH BESAR LAGI DI TABLET */
     }
     
     .company h3{
-        font-size:inherit;
+        font-size:18px;
+    }
+    
+    .company p{
+        font-size:12px;
     }
     
     .invoice-title{
@@ -346,14 +354,33 @@ button:hover{
     }
     
     .header{
-        gap:8px;
+        gap:10px;
     }
     
-    .company{
-        font-size:10px;
+    .logo{
+        height:70px;  /* LOGO TETAP BESAR DI MOBILE */
     }
     
     .company h3{
+        font-size:14px;
+    }
+    
+    .company p{
+        font-size:9px;
+    }
+}
+
+/* Desktop lebih besar */
+@media (min-width: 1024px){
+    .logo{
+        height:130px;  /* LOGO PALING BESAR DI DESKTOP */
+    }
+    
+    .company h3{
+        font-size:18px;
+    }
+    
+    .company p{
         font-size:12px;
     }
 }
@@ -405,15 +432,15 @@ Contoh: <code>038/INV-SB/VI/2026</code> (VI = Juni, 2026 = Tahun)
 
 <div class="invoice" id="invoice-area">
 
-<img src="Logo Sangkara.jpeg" class="watermark" alt="watermark" onerror="this.style.display='none'">
+<img src="Logo Sangkara.png" class="watermark" alt="watermark" onerror="this.style.display='none'">
 
 <div class="header">
-<img src="Logo Sangkara.jpeg" class="logo" alt="Logo" onerror="this.style.display='none'">
+<img src="Logo Sangkara.png" class="logo" alt="Logo" onerror="this.style.display='none'">
 <div class="company">
 <h3>SANGKARA BADMINTON CLUB</h3>
-Jl. Nusa Kenari No. 65 Cinangka Depok<br>
-No. Telp 085173178625 / 08997436352<br>
-Email : sangkarabc@gmail.com | IG : sangkara_badminton
+<p>Jl. Nusa Kenari No. 65 Cinangka Depok</p>
+<p>No. Telp 085173178625 / 08997436352</p>
+<p>Email : sangkarabc@gmail.com | IG : sangkara_badminton</p>
 </div>
 </div>
 
@@ -483,8 +510,8 @@ Rp <span id="out_total">0</span>
 <div class="note">
 <b>Note :</b>
 <ul>
-<li>Pembayaran hanya bisa dilakukan melalui transfer rekening yang telah ditentukan.</li>
-<li>Setelah melakukan pembayaran harap konfirmasi ke admin PB Sangkara.</li>
+<li>Pembayaran hanya bisa dilakukan melalui transfer Rek. Bank BRI 764901011156536 An/ Anggita Sudjana Puspita N.</li>
+<li>Setelah melakukan pembayaran harap konfirmasi ke admin PB Sangkara  </li>
 </ul>
 </div>
 
