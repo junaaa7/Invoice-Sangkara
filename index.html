@@ -47,13 +47,36 @@ body{
     margin-bottom:12px;
 }
 
-.row input{
+.row input, .row select{
     width:100%;
     padding:12px;
-    font-size:16px; /* mencegah zoom otomatis di iOS */
+    font-size:16px;
     border:1px solid #ccc;
     border-radius:5px;
     font-family:inherit;
+}
+
+/* Format invoice number helper */
+.invoice-format-helper{
+    background:#f0f9ff;
+    padding:8px 12px;
+    border-radius:6px;
+    margin-bottom:15px;
+    font-size:13px;
+    color:#075985;
+    border-left:3px solid #1e40af;
+}
+
+.invoice-format-helper strong{
+    color:#1e40af;
+}
+
+.invoice-format-helper code{
+    background:#e2e8f0;
+    padding:2px 6px;
+    border-radius:4px;
+    font-family:monospace;
+    font-size:12px;
 }
 
 /* Button area */
@@ -266,7 +289,7 @@ button:hover{
         gap:15px;
     }
     
-    .row input{
+    .row input, .row select{
         flex:1;
     }
     
@@ -344,8 +367,14 @@ button:hover{
 <div class="form-box">
 <h2>📋 Input Data Invoice</h2>
 
+<!-- Format nomor invoice helper -->
+<div class="invoice-format-helper">
+💡 <strong>Format Nomor Invoice:</strong> <code>Nomor Urut/INV-SB/Bulan/Tahun</code><br>
+Contoh: <code>038/INV-SB/VI/2026</code> (VI = Juni, 2026 = Tahun)
+</div>
+
 <div class="row">
-<input type="text" id="invoice_no" placeholder="Nomor Invoice (contoh: INV-SB-001)">
+<input type="text" id="invoice_no" placeholder="Nomor Invoice (contoh: 038/INV-SB/VI/2026)">
 <input type="text" id="nama" placeholder="Nama Member">
 </div>
 
@@ -391,7 +420,7 @@ Email : sangkarabc@gmail.com | IG : sangkara_badminton
 <div class="invoice-top">
 <div style="display:flex;justify-content:space-between;align-items:end;flex-wrap:wrap;gap:10px;">
 <div>
-<b>No : <span id="out_invoice">INV-SB-001</span></b>
+<b>No : <span id="out_invoice">-</span></b>
 </div>
 <div class="invoice-title">
 INVOICE
@@ -405,17 +434,17 @@ INVOICE
 <tr>
 <td width="130">Nama</td>
 <td width="20">:</td>
-<td id="out_nama">Raka dan Raina</td>
+<td id="out_nama">-</td>
 </tr>
 <tr>
 <td>Periode Invoice</td>
 <td>:</td>
-<td id="out_periode">04 Juni 2026 - 04 Juli 2026</td>
+<td id="out_periode">-</td>
 </tr>
 <tr>
 <td>Jatuh Tempo</td>
 <td>:</td>
-<td id="out_tempo">04 Juli 2026</td>
+<td id="out_tempo">-</td>
 </tr>
 </table>
 </div>
@@ -426,16 +455,28 @@ INVOICE
 <th>JUMLAH</th>
 </tr>
 <tr>
-<td>Pendaftaran</td>
-<td class="right">Rp <span id="out_pendaftaran">0</span></td>
+<td>
+Pendaftaran
+</td>
+<td class="right">
+Rp <span id="out_pendaftaran">0</span>
+</td>
 </tr>
 <tr>
-<td>Iuran Bulanan</td>
-<td class="right">Rp <span id="out_iuran">0</span></td>
+<td>
+Iuran Bulanan
+</td>
+<td class="right">
+Rp <span id="out_iuran">0</span>
+</td>
 </tr>
 <tr class="total-row">
-<td class="right">Total</td>
-<td class="right">Rp <span id="out_total">0</span></td>
+<td class="right">
+Total
+</td>
+<td class="right">
+Rp <span id="out_total">0</span>
+</td>
 </tr>
 </table>
 
@@ -448,10 +489,10 @@ INVOICE
 </div>
 
 <div class="signature">
-<span id="out_kota">Depok</span>,
-<span id="out_tanggal_surat">2 Juni 2026</span>
+<span id="out_kota">-</span>,
+<span id="out_tanggal_surat">-</span>
 <br><br>
-<span id="out_admin">Admin PB Sangkara</span>
+<span id="out_admin">-</span>
 </div>
 
 </div>
@@ -461,7 +502,9 @@ INVOICE
 <script>
 
 function rupiah(angka){
-    if(isNaN(angka) || angka === null || angka === '') return '0';
+    if(isNaN(angka) || angka === null || angka === ''){
+        return '0';
+    }
     return Number(angka).toLocaleString('id-ID');
 }
 
@@ -477,51 +520,39 @@ function formatTanggalIndonesia(tanggalInput){
 }
 
 function generateInvoice(){
-    let invoice = document.getElementById('invoice_no').value || 'INV-SB-001';
-    let nama = document.getElementById('nama').value || '-';
-    let periode = document.getElementById('periode').value || '-';
+    // Ambil nilai dari input (bisa kosong)
+    let invoice = document.getElementById('invoice_no').value;
+    let nama = document.getElementById('nama').value;
+    let periode = document.getElementById('periode').value;
     let tempoRaw = document.getElementById('tempo').value;
-    let tempo = tempoRaw ? formatTanggalIndonesia(tempoRaw) : '-';
+    let tempo = tempoRaw ? formatTanggalIndonesia(tempoRaw) : '';
     
     let pendaftaran = parseInt(document.getElementById('pendaftaran').value) || 0;
     let iuran = parseInt(document.getElementById('iuran').value) || 0;
     let total = pendaftaran + iuran;
     
-    let kota = document.getElementById('kota').value || 'Depok';
+    let kota = document.getElementById('kota').value;
     let tanggalSuratRaw = document.getElementById('tanggal_surat').value;
-    let tanggalSurat = tanggalSuratRaw ? formatTanggalIndonesia(tanggalSuratRaw) : formatTanggalIndonesia(new Date());
-    let adminNama = document.getElementById('admin_nama').value || 'Admin PB Sangkara';
+    let tanggalSurat = tanggalSuratRaw ? formatTanggalIndonesia(tanggalSuratRaw) : '';
+    let adminNama = document.getElementById('admin_nama').value;
     
-    document.getElementById('out_invoice').innerText = invoice;
-    document.getElementById('out_nama').innerText = nama;
-    document.getElementById('out_periode').innerText = periode;
-    document.getElementById('out_tempo').innerText = tempo;
+    // Update tampilan invoice (tampilkan - jika kosong)
+    document.getElementById('out_invoice').innerText = invoice || '-';
+    document.getElementById('out_nama').innerText = nama || '-';
+    document.getElementById('out_periode').innerText = periode || '-';
+    document.getElementById('out_tempo').innerText = tempo || '-';
     
     document.getElementById('out_pendaftaran').innerText = rupiah(pendaftaran);
     document.getElementById('out_iuran').innerText = rupiah(iuran);
     document.getElementById('out_total').innerText = rupiah(total);
     
-    document.getElementById('out_kota').innerText = kota;
-    document.getElementById('out_tanggal_surat').innerText = tanggalSurat;
-    document.getElementById('out_admin').innerText = adminNama;
+    document.getElementById('out_kota').innerText = kota || '-';
+    document.getElementById('out_tanggal_surat').innerText = tanggalSurat || '-';
+    document.getElementById('out_admin').innerText = adminNama || '-';
 }
 
-// Inisialisasi contoh data default
-window.addEventListener('DOMContentLoaded', function(){
-    // Set contoh data agar invoice tidak kosong
-    if(!document.getElementById('invoice_no').value){
-        document.getElementById('invoice_no').value = 'INV-SB-001';
-        document.getElementById('nama').value = 'Raka dan Raina';
-        document.getElementById('periode').value = '04 Juni 2026 - 04 Juli 2026';
-        document.getElementById('tempo').value = '2026-07-04';
-        document.getElementById('pendaftaran').value = '500000';
-        document.getElementById('iuran').value = '350000';
-        document.getElementById('kota').value = 'Depok';
-        document.getElementById('tanggal_surat').value = '2026-06-02';
-        document.getElementById('admin_nama').value = 'Admin PB Sangkara';
-        generateInvoice();
-    }
-});
+// Tidak ada auto generate saat halaman dimuat
+// Invoice akan menampilkan tanda - (strip) sampai user klik Generate
 
 </script>
 
